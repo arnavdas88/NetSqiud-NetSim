@@ -1,0 +1,39 @@
+ {
+    "name": "Quantum_Connection",
+    "description": "A simple quantum link",
+    "nodes": [
+        {
+            "id": "192.168.18.13",
+            "name": "node_A",
+            "type": "edge",
+            "class": "node",
+            "memory": 3,
+            "delay-config": { "delay": 5 },
+            
+            "ports": ["qport"]
+        },
+        {
+            "id": "192.168.18.14",
+            "name": "node_B",
+            "type": "edge",
+            "memory": 3,
+            "class": "node",
+            
+            "ports": ["qportL"]
+        }
+    ],
+    "connections": [
+        {
+            "name": "quantum",
+            "type": "quantum",
+            "connection": ["192.168.18.13", "192.168.18.14"],
+            "to": {"id": "192.168.18.13", "port": "qport"},
+            "from": {"id": "192.168.18.14", "port": "qportL"},
+            "distance": "43",
+            "delay-type": "FibreDelayModel",
+            
+            "loss-type": "FibreLossModel",
+            "loss-config": { "p_loss_init": 0.83, "p_loss_length": 0.2}
+        }
+    ]
+ }
