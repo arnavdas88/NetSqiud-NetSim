@@ -2,8 +2,9 @@ import os
 import netsquid as ns
 import subprocess
 
-from .Protocol import PingProtocol, ListenProtocol
+
 from .Telnet import Telnet
+from .Kernel import Kernel
 
 class Node:
     TYPE = ""
@@ -18,6 +19,8 @@ class Node:
     network = None
 
     telnet_client = None
+
+    kernel = None
     
     
     def __init__(self, network):
@@ -33,14 +36,7 @@ class Node:
         pass
 
     def run(self, command):
-        if command[0:4] == "ping":
-            target = command[5:]
-            ping = PingProtocol(self.node, self.telnet_client, port=target)
-            ping.start()
-        if command[0:6] == "listen":
-            target = command[7:]
-            listen = ListenProtocol(self.node, self.telnet_client, port=target)
-            listen.start()
+        self.kernel.run(command)
         self.network() # ns.sim_run()
         pass
 
@@ -58,6 +54,7 @@ class Node:
         print(f"Starting Telnet for device {self.NAME} in ", end = "")
         self.telnet_client = Telnet(name=self.NAME)
         self.telnet_client(self.run)
+        self.kernel = Kernel(self)
         # self.telnet_client(print)
 
         return self
@@ -67,8 +64,9 @@ class Node:
         return node.load(data)
     
     def summary(self, ):
-        print("="*7, self.ID, "::", self.TYPE, "="*7)
+        print("="*7, self.ID, "::", f"[{self.TYPE}]", "="*7)
         print("\t" + "Name : " + self.NAME + "\t")
+        print("\t" + "Ports : " + str(self.ports) + "\t")
         print("\t" + "Source.delay : " + str(self.delay_config) + "\t")
         print("\t" + "Source.delay_type : " + self.delay_type + "\t")
         print()

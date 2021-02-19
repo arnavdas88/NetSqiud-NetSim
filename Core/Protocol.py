@@ -33,3 +33,11 @@ class ListenProtocol(NodeProtocol):
             m, prob = qapi.measure(qubit, ns.Z)
             # print(f"[i] Received {m} with {prob} probability.")
             self.telnet.listener_push(f"[i] Received {m} with {prob} probability.")
+
+class BlankProtocol:
+    def __init__(self, *args, **kwargs):
+        pass
+    def start(self, ):
+        pass
+    def run(self, ):
+        pass
